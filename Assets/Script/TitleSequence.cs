@@ -1,17 +1,13 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class TitleSequence : MonoBehaviour
 {
     //フェード
-    [SerializeField]
-    private GameObject FadeObj;
-    private Fade _Fade;
+    private float alpha;
 
-    //シーケンススイッチ
-    private int titleSwicth;
     //フェードスピード
     [SerializeField]
     private float fadespeed;
@@ -20,57 +16,30 @@ public class TitleSequence : MonoBehaviour
     void Awake()
     {
         //フェード準備
-        _Fade = FadeObj.GetComponent<Fade>();
-
-        titleSwicth = 0;
+        alpha = 1;
     }
 
     //画面更新
     void Update()
     {
-
-        Debug.Log(titleSwicth);
-
-        switch (titleSwicth)
+        //色を当てはめる
+        GetComponent<Image>().color =
+            new Color(0, 0, 0, alpha);
+        if (alpha <= 0)
         {
-            case 0:
-                //初期化
-                StartCoroutine(_Fade.reset(0, 0, 0, 1));
-                //終わったら次のスイッチ
-                titleSwicth = 1;
-                break;
-            case 1:
-                _Fade.Fadein(fadespeed);
-                //フェード終了
-                if (_Fade.alpha <= 0)
+            if (Input.touchCount > 0)
+            {
+                Touch touch = Input.GetTouch(0);
+                if (touch.phase == TouchPhase.Began)
                 {
-                    //FadeObj.SetActive(false);
-                    ++titleSwicth;
+                    FadeManager.Instance.LoadScene("Menu", 1.0f);
                 }
-                break;
-            case 2:
-
-                if (Input.touchCount > 0)
-                {
-                    Touch touch = Input.GetTouch(0);
-                    if (touch.phase == TouchPhase.Began)
-                    {
-                        //FadeObj.SetActive(true);
-                        ++titleSwicth;
-                    }
-                }
-
-                break;
-            case 3:
-                _Fade.Fadeout(fadespeed);
-                if (_Fade.alpha >= 1)
-                {
-                    ++titleSwicth;
-                }
-                break;
-            case 4:
-                SceneManager.LoadScene("Main");
-                break;
+            }
+        }
+        else
+        {
+            //フェードインする
+            alpha -= fadespeed;
         }
     }
 }
