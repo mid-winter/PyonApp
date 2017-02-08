@@ -12,6 +12,10 @@ public class TitleSequence : MonoBehaviour
     [SerializeField]
     private float fadespeed;
 
+    //遷移先シーン
+    [SerializeField]
+    private string NextScene = "Menu";
+
     //初期化
     void Awake()
     {
@@ -32,7 +36,7 @@ public class TitleSequence : MonoBehaviour
                 Touch touch = Input.GetTouch(0);
                 if (touch.phase == TouchPhase.Began)
                 {
-                    FadeManager.Instance.LoadScene("Menu", 1.0f);
+                    FadeManager.Instance.LoadScene(NextScene, 1.0f);
                 }
             }
         }
